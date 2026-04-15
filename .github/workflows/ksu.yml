@@ -1,4 +1,4 @@
-name: Alexandra Kernel Build
+name: KSU-Next
 
 on:
   workflow_dispatch:
@@ -6,7 +6,7 @@ on:
       repository: { description: 'Repo', required: true, default: 'DooPrjkt/wind-kernel' }
       branch: { description: 'Branch', required: true, default: 'wind-kernel_T' }
       defconfig: { description: 'Defconfig', required: true, default: 'mido_defconfig' }
-      kernelsu_branch: { description: 'KSU Branch', required: false, default: 'dev' }
+      kernelsu_branch: { description: 'KSU Branch', required: false, default: 'builtin' }
 
 jobs:
   build:
@@ -27,12 +27,12 @@ jobs:
         export TZ="Asia/Jakarta"
         echo "BUILD_TIME=$(date +'%H%M-%d%m%y')" >> $GITHUB_ENV
 
-        # Download AOSP Clang r547379
+        # Download AOSP Clang r450784d
         mkdir tc
-        wget -qO- https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/62cdcefa89e31af2d72c366e8b5ef8db84caea62/clang-r547379.tar.gz | tar -xz -C tc
+        wget -qO- https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/android13-release/clang-r450784d.tar.gz | tar -xz -C tc
         export PATH=$PWD/tc/bin:$PATH
         
-        curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/next/kernel/setup.sh" | bash -s ${{ github.event.inputs.kernelsu_branch }}
+        curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s ${{ github.event.inputs.kernelsu_branch }}
 
         export ARCH=arm64
         export KBUILD_BUILD_USER="DooPrjkt"
@@ -43,8 +43,8 @@ jobs:
         make -j$(nproc) $ARGS 2>&1 | tee compile.log || true
 
         if [ -f out/arch/arm64/boot/Image ]; then
-          ZIP_NAME="Alexandra-${{ env.BUILD_TIME }}.zip"
-          zip -j "$ZIP_NAME" out/arch/arm64/boot/Image out/arch/arm64/boot/dtbo.img 2>/dev/null || zip -j "$ZIP_NAME" out/arch/arm64/boot/Image
+          ZIP_NAME="WIND-KERNEL_B1 ${{ env.BUILD_TIME }}.zip"
+          zip -j "$ZIP_NAME" out/arch/arm64/boot/Image.gz-dtb out/arch/arm64/boot/dtbo.img 2>/dev/null || zip -j "$ZIP_NAME" out/arch/arm64/boot/Image.gz-dtb
           echo "FINAL_ZIP=$ZIP_NAME" >> $GITHUB_ENV
         fi
 
@@ -68,16 +68,12 @@ jobs:
           curl -s -F document=@"compile.log" \
                "https://api.telegram.org/bot${TOKEN}/sendDocument" \
                -F chat_id="${CHAT}" \
-               -F caption="Alexandra Log [${{ env.BUILD_TIME }}] - Status: ${{ job.status }}"
+               -F caption="get_work Log [${{ env.BUILD_TIME }}] - Status: ${{ job.status }}"
         fi
 
-        if [ -f "${{ env.FINAL_ZIP }}" ]; then
+        if [ -n "${{ env.FINAL_ZIP }}" ] && [ -f "${{ env.FINAL_ZIP }}" ]; then
           curl -s -F document=@"${{ env.FINAL_ZIP }}" \
                "https://api.telegram.org/bot${TOKEN}/sendDocument" \
                -F chat_id="${CHAT}" \
-               -F caption="imell_imupp [${{ env.BUILD_TIME }}]"
+               -F caption="BuildBot Success [${{ env.BUILD_TIME }}]"
         fi
-        
-ZIP [${{ env.BUILD_TIME }}]"
-        fi
-        
