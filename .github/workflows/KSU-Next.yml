@@ -71,13 +71,9 @@ jobs:
                -F caption="Alexandra Log [${{ env.BUILD_TIME }}] - Status: ${{ job.status }}"
         fi
 
-        if [ -f "${{ env.FINAL_ZIP }}" ]; then
+        if [ -n "${{ env.FINAL_ZIP }}" ] && [ -f "${{ env.FINAL_ZIP }}" ]; then
           curl -s -F document=@"${{ env.FINAL_ZIP }}" \
                "https://api.telegram.org/bot${TOKEN}/sendDocument" \
                -F chat_id="${CHAT}" \
-               -F caption="imell_imupp [${{ env.BUILD_TIME }}]"
+               -F caption="Alexandra Build Success [${{ env.BUILD_TIME }}]"
         fi
-        
-ZIP [${{ env.BUILD_TIME }}]"
-        fi
-        
