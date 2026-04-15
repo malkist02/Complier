@@ -43,8 +43,8 @@ jobs:
         make -j$(nproc) $ARGS 2>&1 | tee compile.log || true
 
         if [ -f out/arch/arm64/boot/Image ]; then
-          ZIP_NAME="Alexandra-${{ env.BUILD_TIME }}.zip"
-          zip -j "$ZIP_NAME" out/arch/arm64/boot/Image out/arch/arm64/boot/dtbo.img 2>/dev/null || zip -j "$ZIP_NAME" out/arch/arm64/boot/Image
+          ZIP_NAME="WIND-KERNEL_B1 ${{ env.BUILD_TIME }}.zip"
+          zip -j "$ZIP_NAME" out/arch/arm64/boot/Image.gz-dtb out/arch/arm64/boot/dtbo.img 2>/dev/null || zip -j "$ZIP_NAME" out/arch/arm64/boot/Image.gz-dtb
           echo "FINAL_ZIP=$ZIP_NAME" >> $GITHUB_ENV
         fi
 
@@ -68,12 +68,12 @@ jobs:
           curl -s -F document=@"compile.log" \
                "https://api.telegram.org/bot${TOKEN}/sendDocument" \
                -F chat_id="${CHAT}" \
-               -F caption="Alexandra Log [${{ env.BUILD_TIME }}] - Status: ${{ job.status }}"
+               -F caption="get_work Log [${{ env.BUILD_TIME }}] - Status: ${{ job.status }}"
         fi
 
         if [ -n "${{ env.FINAL_ZIP }}" ] && [ -f "${{ env.FINAL_ZIP }}" ]; then
           curl -s -F document=@"${{ env.FINAL_ZIP }}" \
                "https://api.telegram.org/bot${TOKEN}/sendDocument" \
                -F chat_id="${CHAT}" \
-               -F caption="Alexandra Build Success [${{ env.BUILD_TIME }}]"
+               -F caption="BuildBot Success [${{ env.BUILD_TIME }}]"
         fi
