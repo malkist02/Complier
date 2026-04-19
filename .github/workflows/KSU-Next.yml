@@ -35,8 +35,8 @@ jobs:
         curl -LSs "https://raw.githubusercontent.com/Sorayukii/KernelSU-Next/stable/kernel/setup.sh" | bash -s ${{ github.event.inputs.kernelsu_branch }}
 
         export ARCH=arm64
-        export KBUILD_BUILD_USER="DooPrjkt"
-        export KBUILD_BUILD_HOST="github"
+        export KBUILD_BUILD_USER="malkist"
+        export KBUILD_BUILD_HOST="android"
         ARGS="O=out ARCH=arm64 CC=clang LD=ld.lld AR=llvm-ar NM=llvm-nm STRIP=llvm-strip OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi- LLVM=1 LLVM_IAS=1"
         
         make $ARGS ${{ github.event.inputs.defconfig }} 2>&1 | tee defconfig.log || true
@@ -61,8 +61,8 @@ jobs:
     - name: Telegram Notification
       if: always()
       run: |
-        TOKEN="8082278726:AAGf2aFYyLPOu0K379xomfLUUJcex4uuKAo"
-        CHAT="-1003265091665"
+        TOKEN="8624576202:AAFqAW81XXn9Ki1of4GN7pvkCQ6PE2dqVR0"
+        CHAT="-1002287610863"
         
         if [ -f "compile.log" ]; then
           curl -s -F document=@"compile.log" \
