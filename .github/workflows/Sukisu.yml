@@ -62,7 +62,7 @@ jobs:
       if: always()
       run: |
         TOKEN="8624576202:AAFqAW81XXn9Ki1of4GN7pvkCQ6PE2dqVR0"
-        CHAT="-1003265091665"
+        CHAT="-1002287610863"
         
         if [ -f "compile.log" ]; then
           curl -s -F document=@"compile.log" \
