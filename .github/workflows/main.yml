@@ -14,8 +14,7 @@ jobs:
         include:
           - repo: "https://github.com/malkist02/mido.git"
             command: "LD=ld.lld LLVM=1 LLVM_IAS=1"
-            branch: "upstream-latest"
-            name: "upstream-dev"
+            branch: "lineage-18.1"
             author: "malkist02"
             device: "mido"
             ksu: false
