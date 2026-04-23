@@ -35,7 +35,7 @@ on:
         type: string
       kernel-branch:
         description: 'Kernel-branch'
-        default: 'main'
+        default: 'lineage-18.1'
         required: true
         type: string
       kernel-config:
